@@ -12,17 +12,19 @@ export class CustomServer {
   public app!: Express;
   private server!: Server;
 
-  constructor(params?: ServerParams) {
-    this.initializeServer(params);
-    this.registerRoutes();
-  }
+  constructor(private readonly params?: ServerParams) {}
 
-  private initializeServer(params?: ServerParams): void {
-    const port = params?.port || 3000;
+  public initializeServer(): Promise<void> {
+    const port = this.params?.port || 3000;
 
     this.app = express();
 
-    this.server = this.app.listen(params?.port || 3000);
+    return new Promise((resolve) => {
+      this.server = this.app.listen(port, () => {
+        this.registerRoutes();
+        resolve();
+      });
+    });
   }
 
   public registerRoutes() {
@@ -49,13 +51,9 @@ export class CustomServer {
   }
 
   public async close(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.server.close((err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
+    return new Promise((resolve) => {
+      this.server.close(() => {
+        resolve();
       });
     });
   }

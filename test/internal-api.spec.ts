@@ -5,8 +5,9 @@ import { TaskStatus } from '../src/shared/task-status.enum';
 describe('InternalApi', () => {
   let server: CustomServer;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     server = new CustomServer({ port: 3000 });
+    await server.initializeServer();
   });
 
   afterAll(async () => {

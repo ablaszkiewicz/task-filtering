@@ -7,8 +7,9 @@ import { ValidationError } from 'class-validator';
 describe('InternalApiValidation', () => {
   let server: CustomServer;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     server = new CustomServer({ port: 3000 });
+    await server.initializeServer();
   });
 
   afterAll(async () => {
