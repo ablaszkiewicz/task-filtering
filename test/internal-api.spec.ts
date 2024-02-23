@@ -1,12 +1,12 @@
-import { CustomServer } from '../src/custom-server';
 import request from 'supertest';
 import { TaskStatus } from '../src/shared/task-status.enum';
+import { TaskFilteringServer } from '../src/server/task-filtering.server';
 
 describe('InternalApi', () => {
-  let server: CustomServer;
+  let server: TaskFilteringServer;
 
   beforeAll(async () => {
-    server = new CustomServer({ port: 3000 });
+    server = new TaskFilteringServer();
     await server.initializeServer();
   });
 

@@ -1,37 +1,33 @@
 import express, { Express } from 'express';
 import { Server } from 'http';
-import { GetTasksCountQuery } from './internal-api/get-tasks-count.query';
-import { IQuery } from './internal-api/query';
+import { IQuery } from '../internal-api/query';
 import { parse } from 'url';
 
 interface ServerParams {
   port?: number;
 }
 
-export class CustomServer {
+export abstract class CustomServer {
+  private readonly PORT = 3000;
   public app!: Express;
   private server!: Server;
 
   constructor(private readonly params?: ServerParams) {}
 
   public initializeServer(): Promise<void> {
-    const port = this.params?.port || 3000;
-
     this.app = express();
 
     return new Promise((resolve) => {
-      this.server = this.app.listen(port, () => {
+      this.server = this.app.listen(this.PORT, () => {
         this.registerRoutes();
         resolve();
       });
     });
   }
 
-  public registerRoutes() {
-    this.registerValidatedGetRoute('/tasks/:status/count', new GetTasksCountQuery());
-  }
+  abstract registerRoutes(): void;
 
-  private registerValidatedGetRoute(endpoint: string, query: IQuery<any, any>) {
+  protected registerValidatedGetRoute(endpoint: string, query: IQuery<any, any>) {
     this.app.get(endpoint, async (req, res) => {
       const requestQuery = parse(req.url, true).query;
       const requestParams = req.params;

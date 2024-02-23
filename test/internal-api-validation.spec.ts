@@ -1,14 +1,14 @@
-import { CustomServer } from '../src/custom-server';
+import { TaskFilteringServer } from '../src/server/task-filtering.server';
 import { GetTasksCountParams } from '../src/internal-api/get-tasks-count.params';
 import request from 'supertest';
 import { TaskStatus } from '../src/shared/task-status.enum';
 import { ValidationError } from 'class-validator';
 
 describe('InternalApiValidation', () => {
-  let server: CustomServer;
+  let server: TaskFilteringServer;
 
   beforeAll(async () => {
-    server = new CustomServer({ port: 3000 });
+    server = new TaskFilteringServer();
     await server.initializeServer();
   });
 
