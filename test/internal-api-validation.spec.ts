@@ -11,8 +11,8 @@ describe('InternalApiValidation', () => {
     server = new CustomServer({ port: 3000 });
   });
 
-  afterAll(() => {
-    server.close();
+  afterAll(async () => {
+    await server.close();
   });
 
   const validParams: GetTasksCountParams = {

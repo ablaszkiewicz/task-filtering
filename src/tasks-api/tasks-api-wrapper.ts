@@ -1,13 +1,15 @@
 import axios from 'axios';
 import { PaginatedResponse } from '../shared/paginated-response';
 import { GetTasksParams } from './get-tasks.params';
-import { Task } from './task';
+import { Task } from '../shared/task';
+import { writeFileSync } from 'fs';
 
 export class TasksApiWrapper {
   private BASE_URL = 'https://7d9hgwsl2k.execute-api.us-east-1.amazonaws.com/dev/api/tasks';
 
   public async getTasks(params: GetTasksParams): Promise<Task[]> {
     const initialResponse = await this.getTasksOnPage(1, params);
+
     const numberOfPages = initialResponse.total_pages;
 
     const promises: Promise<PaginatedResponse<Task>>[] = [];
@@ -17,7 +19,9 @@ export class TasksApiWrapper {
 
     const responses = await Promise.all(promises);
 
-    return [initialResponse, ...responses].map((r) => r.data).flat();
+    const tasks = [initialResponse, ...responses].map((r) => r.data).flat();
+
+    return tasks;
   }
 
   private async getTasksOnPage(page: number, params: GetTasksParams): Promise<PaginatedResponse<Task>> {

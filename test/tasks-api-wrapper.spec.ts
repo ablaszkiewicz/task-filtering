@@ -1,13 +1,9 @@
-import { CustomServer } from '../src/custom-server';
-import { GetTasksCountParams } from '../src/internal-api/get-tasks-count.params';
-import request from 'supertest';
 import { TaskStatus } from '../src/shared/task-status.enum';
-import { ValidationError } from 'class-validator';
 import { TasksApiWrapper } from '../src/tasks-api/tasks-api-wrapper';
 import nock from 'nock';
 import { PaginatedResponse } from '../src/shared/paginated-response';
-import { Task } from '../src/tasks-api/task';
 import { v4 } from 'uuid';
+import { Task } from '../src/shared/task';
 
 const getMockTask = (): Task => {
   return {
