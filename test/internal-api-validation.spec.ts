@@ -36,7 +36,6 @@ describe('InternalApiValidation', () => {
     ['dateStr', '21-01-2019', 'dateStr must match /^(0[1-9]|1[0-2])-(19|20)\\d{2}$/ regular expression'],
   ])('when "%s" is "%s", then it should return "%s"', async (property, value, error) => {
     const params = { ...validParams, [property]: value };
-    const { status, ...rest } = params;
 
     const urlQuery = new URLSearchParams();
     urlQuery.set('dateStr', params.dateStr);
