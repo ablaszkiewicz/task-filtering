@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { TaskStatus } from '../src/shared/task-status.enum';
 import { TaskFilteringServer } from '../src/server/task-filtering.server';
+import nock from 'nock';
 
 describe('InternalApi', () => {
   let server: TaskFilteringServer;
@@ -46,4 +47,24 @@ describe('InternalApi', () => {
       await expectResult({ status, priority, dateStr, expectedCount });
     }
   );
+
+  it('should propagate error message from an external API', async () => {
+    // given
+    nock('https://7d9hgwsl2k.execute-api.us-east-1.amazonaws.com/dev/api')
+      .get('/tasks?status=ACTIVE&page=1')
+      .reply(500, {
+        message: 'Something went wrong',
+      });
+
+    const status = TaskStatus.Active;
+    const priority = 3;
+    const dateStr = '01-2019';
+
+    // when
+    const response = await request(server.app).get(`/tasks/${status}/count?dateStr=${dateStr}&priority=${priority}`);
+
+    // then
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual(JSON.stringify({ message: 'Something went wrong' }));
+  });
 });

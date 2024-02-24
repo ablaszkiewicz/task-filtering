@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { PaginatedResponse } from '../shared/paginated-response';
 import { GetTasksParams } from './get-tasks.params';
 import { Task } from '../shared/task';
@@ -29,7 +29,11 @@ export class TasksApiWrapper {
     urlQuery.set('status', params.status);
     urlQuery.set('page', page.toString());
 
-    const response = await axios.get(`${this.BASE_URL}?${urlQuery.toString()}`);
-    return response.data;
+    try {
+      const response = await axios.get(`${this.BASE_URL}?${urlQuery.toString()}`);
+      return response.data;
+    } catch (e: any) {
+      throw new Error(JSON.stringify(e.response.data));
+    }
   }
 }

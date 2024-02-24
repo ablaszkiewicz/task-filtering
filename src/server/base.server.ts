@@ -41,8 +41,12 @@ export abstract class CustomServer {
         return;
       }
 
-      const result = await query.execute(params);
-      res.status(200).json(result);
+      try {
+        const result = await query.execute(params);
+        res.status(200).json(result);
+      } catch (e: any) {
+        res.status(500).json(e.message);
+      }
     });
   }
 
