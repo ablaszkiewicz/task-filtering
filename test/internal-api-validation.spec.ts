@@ -35,14 +35,16 @@ describe('InternalApiValidation', () => {
     ['dateStr', 'not-date', 'dateStr must match /^(0[1-9]|1[0-2])-(19|20)\\d{2}$/ regular expression'],
     ['dateStr', '21-01-2019', 'dateStr must match /^(0[1-9]|1[0-2])-(19|20)\\d{2}$/ regular expression'],
   ])('when "%s" is "%s", then it should return "%s"', async (property, value, error) => {
+    // given
     const params = { ...validParams, [property]: value };
-
     const urlQuery = new URLSearchParams();
     urlQuery.set('dateStr', params.dateStr);
     urlQuery.set('priority', params.priority.toString());
 
+    // when
     const response = await request(server.app).get(`/tasks/${params.status}/count?${urlQuery.toString()}`);
 
+    // then
     expectValidationError(error, response.body.errors);
   });
 });
